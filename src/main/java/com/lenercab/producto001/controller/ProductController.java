@@ -3,6 +3,7 @@ package com.lenercab.producto001.controller;
 import com.lenercab.producto001.model.Product;
 import com.lenercab.producto001.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,26 +15,26 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping("/Product")
-    public List<Product> GetProductAll(){
-        return productService.findALL();
+    public ResponseEntity<Object> GetProductAll(){
+        return ResponseEntity.ok(productService.findALL());
     }
 
     @GetMapping("/Product/{id}")
-    public Optional GetProductById(@PathVariable("id") Long id){
-        return productService.findById(id);
+    public ResponseEntity<Object> GetProductById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @PostMapping("/Product")
-    public String saveProduct(@RequestBody Product product){
-        return productService.saveProduct(product);
+    public ResponseEntity<Object> saveProduct(@RequestBody Product product){
+        return ResponseEntity.status(201).body(productService.saveProduct(product));
     }
     @PutMapping("/Product")
-    public String updateProduct(@RequestBody Product product){
-        return productService.updateProduct(product);
+    public ResponseEntity<Object> updateProduct(@RequestBody Product product){
+        return ResponseEntity.status(201).body(productService.updateProduct(product));
     }
 
     @DeleteMapping("/Product/{id}")
-    public String deleteProduct(@PathVariable("id") Long id){
-        return productService.deleteProduct(id);
+    public ResponseEntity<Object> deleteProduct(@PathVariable("id") Long id){
+        return ResponseEntity.status(200).body(productService.deleteProduct(id));
     }
 }
