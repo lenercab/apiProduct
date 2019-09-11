@@ -14,10 +14,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product saveProduct(Product product){
+    public String saveProduct(Product product){
 
         productRepository.save(product);
-        return product;
+        return "Product fue insertado con exito";
     }
 
     public Optional findById(Long id) {
@@ -27,5 +27,15 @@ public class ProductService {
 
     public List<Product> findALL(){
         return productRepository.findAll();
+    }
+
+    public String updateProduct(Product product){
+        productRepository.save(product);
+        return "Product fue actualizado con exito";
+    }
+
+    public String deleteProduct(Long id){
+        productRepository.deleteById(id);
+        return "Product fue eliminado con exito";
     }
 }
