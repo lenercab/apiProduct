@@ -9,10 +9,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.ribbon.RibbonClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
@@ -28,36 +25,21 @@ public class ControllerRibbonClient {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /*@Autowired
-    private DiscoveryClient discoveryClient;
-
-    @LoadBalanced
-    @Bean
-    RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    @Autowired
-    RestTemplate restTemplate;
-
-
-    @GetMapping("/Ribbon/Product")
-    public ResponseEntity GetProductAll(){
-
-        List<ServiceInstance> instance = this.discoveryClient.getInstances("product001");
-        System.out.println("instancia");
-        System.out.println(instance.get(0).getUri());
-        return   this.restTemplate.getForObject(instance.get(0).getUri()+"/Product",
-                 ResponseEntity.class);
-    }*/
     @Autowired
     private Product001ServiceProxy proxy;
 
     @GetMapping("/RibbonFeing/Product")
     public ResponseEntity<Object> GetProductAllFeing(){
-
         return proxy.GetProductAll();
-
     }
 
+    @GetMapping("/RibbonFeing/Product/{id}")
+    public ResponseEntity<Object> GetProductByIdFeing(@PathVariable("id") Long id){
+        return proxy.GetProductById(id);
+    }
+
+    @PostMapping("/RibbonFeing/Product")
+    public ResponseEntity<Object> PostProduct(@Valid @RequestBody Product product){
+        return proxy.saveProduct(product);
+    }
 }

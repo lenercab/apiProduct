@@ -14,10 +14,10 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public String saveProduct(Product product){
+    public Product saveProduct(Product product){
 
-        productRepository.save(product);
-        return "Product fue insertado con exito";
+//        productRepository.save(product);
+        return productRepository.save(product);
     }
 
     public Optional findById(Long id) {
