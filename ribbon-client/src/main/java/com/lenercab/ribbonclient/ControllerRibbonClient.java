@@ -21,35 +21,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-/*@RibbonClient(
-        name = "product001",
-        configuration = RibbonConfiguration.class) */
 public class ControllerRibbonClient {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /*@Autowired
-    private DiscoveryClient discoveryClient;
-
-    @LoadBalanced
-    @Bean
-    RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    @Autowired
-    RestTemplate restTemplate;
-
-
-    @GetMapping("/Ribbon/Product")
-    public ResponseEntity GetProductAll(){
-
-        List<ServiceInstance> instance = this.discoveryClient.getInstances("product001");
-        System.out.println("instancia");
-        System.out.println(instance.get(0).getUri());
-        return   this.restTemplate.getForObject(instance.get(0).getUri()+"/Product",
-                 ResponseEntity.class);
-    }*/
     @Autowired
     private Product001ServiceProxy proxy;
 
