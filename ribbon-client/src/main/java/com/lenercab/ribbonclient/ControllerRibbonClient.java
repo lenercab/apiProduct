@@ -39,4 +39,9 @@ public class ControllerRibbonClient {
     public ResponseEntity<Object> PostProduct(@Valid @RequestBody Product product){
         return proxy.saveProduct(product);
     }
+
+    @PutMapping("/RibbonFeing/Product")
+    public ResponseEntity<Object> updateProduct(@Valid @RequestBody Product product){
+        return proxy.updateProduct(product);
+    }
 }

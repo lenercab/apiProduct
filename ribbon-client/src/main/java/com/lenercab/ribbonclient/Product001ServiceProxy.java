@@ -26,4 +26,7 @@ public interface Product001ServiceProxy {
 //  @PostMapping("/Product")
     @PostMapping("/product001/Product")
     public ResponseEntity<Object> saveProduct(@Valid @RequestBody Product product);
+
+    @PutMapping("/Product")
+    public ResponseEntity<Object> updateProduct(@Valid @RequestBody Product product);
 }

@@ -16,7 +16,6 @@ public class ProductService {
 
     public Product saveProduct(Product product){
 
-//        productRepository.save(product);
         return productRepository.save(product);
     }
 
@@ -29,9 +28,9 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public String updateProduct(Product product){
-        productRepository.save(product);
-        return "Product fue actualizado con exito";
+    public Product updateProduct(Product product){
+
+        return productRepository.save(product);
     }
 
     public String deleteProduct(Long id){
