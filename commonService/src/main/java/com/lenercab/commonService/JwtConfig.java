@@ -1,74 +1,61 @@
 package com.lenercab.commonService;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class JwtConfig {
 
-    @Value("${app.jwt.secret}")
-    private String jwtSecret;
+    @Value("${security.jwt.uri:/auth/**}")
+    private String Uri;
 
-    @Value("${app.jwt.token.prefix}")
-    private String jwtTokenPrefix;
+    @Value("${security.jwt.header:Authorization}")
+    private String header;
 
-    @Value("${app.jwt.header.string}")
-    private String jwtHeaderString;
+    @Value("${security.jwt.prefix:Bearer }")
+    private String prefix;
 
-    @Value("${app.jwt.expiration-in-ms}")
-    private Long jwtExpirationInMs;
+    @Value("${security.jwt.expiration:#{24*60*60}}")
+    private int expiration;
 
-    public String generateToken(Authentication authentication){
-        String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining());
+    @Value("${security.jwt.secret:JwtSecretKey}")
+    private String secret;
 
-        return Jwts.builder().setSubject(authentication.getName())
-                .claim("roles", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+    public String getUri() {
+        return Uri;
     }
 
-    public Authentication getAuthentication(HttpServletRequest request){
-        String token = resolveToken(request);
-        if(token == null){
-            return null;
-        }
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        String username = claims.getSubject();
-        List<GrantedAuthority> authorities = Arrays.stream(claims.get("roles").toString().split(","))
-                .map(role -> role.startsWith("ROLE_")? role:"ROLE_"+role)
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-        return username!=null ? new UsernamePasswordAuthenticationToken(username, null, authorities):null;
+    public void setUri(String uri) {
+        Uri = uri;
     }
 
-    public boolean validateToken(HttpServletRequest request){
-        String token = resolveToken(request);
-        if(token == null){
-            return false;
-        }
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
-        if(claims.getExpiration().before(new Date())){
-            return false;
-        }
-        return true;
+    public String getHeader() {
+        return header;
     }
 
-    private String resolveToken(HttpServletRequest request){
-        String bearerToken = request.getHeader(jwtHeaderString);
-        if(bearerToken!=null && bearerToken.startsWith(jwtTokenPrefix)){
-            return bearerToken.substring(7, bearerToken.length());
-        }
-        return null;
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public int getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(int expiration) {
+        this.expiration = expiration;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

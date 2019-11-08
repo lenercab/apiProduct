@@ -16,7 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-
+import com.lenercab.commonService.JwtConfig;
 public class JwtTokenAuthenticationFilter extends  OncePerRequestFilter {
 
     private final JwtConfig jwtConfig;
