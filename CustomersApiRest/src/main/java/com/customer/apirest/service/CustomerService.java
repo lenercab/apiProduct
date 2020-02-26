@@ -20,8 +20,8 @@ public class CustomerService {
 
     public Optional findById(Long id) {
         Optional optional = customerRepository.findById(id);
-        if (optional.isEmpty())
-            throw new CustomerNotFoundExpection("Not found customer");
+       /* if (optional.isEmpty())
+            throw new CustomerNotFoundExpection("Not found customer");*/
 
         return optional;
     }

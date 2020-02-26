@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,76 +18,108 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import org.hibernate.exception.ConstraintViolationException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-
+import java.time.format.DateTimeParseException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 @RestController
 public class CustomerResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(CustomerNotFoundExpection.class)
-    public final ResponseEntity<Object> handlerAllCustomerNotFoundExpection(Exception ex,
-            WebRequest request) {
+        @ExceptionHandler(DateTimeParseException.class)
+        public final ResponseEntity<Object> handlerAllDateTimeParseException(DateTimeParseException ex, WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 
-    }
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public final ResponseEntity<Object> handlerAllSQLIntegrityConstraintViolationException(Exception ex,
-            WebRequest request) {
-
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
-
-    }
-
-    @ExceptionHandler({ DataIntegrityViolationException.class })
-    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
-        int errorCode = ex.getErrorCode();
-
-        if (errorCode == 1062) {
-
-            ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                    "The customer already exists!");
-            return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
         }
 
-        ExceptionResponse exceptionResponse1 = new ExceptionResponse(new Date(), ex.getMessage(),
-                request.getDescription(true));
-        return new ResponseEntity<Object>(exceptionResponse1, HttpStatus.BAD_REQUEST);
+        @ExceptionHandler(CustomerNotFoundExpection.class)
+        public final ResponseEntity<Object> handlerAllCustomerNotFoundExpection(Exception ex, WebRequest request) {
 
-    }
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(
-            HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        }
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
-    }
-    @Override
-    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+        public final ResponseEntity<Object> handlerAllSQLIntegrityConstraintViolationException(Exception ex,
+                        WebRequest request) {
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.METHOD_NOT_ALLOWED);
-    }
-    @Override
-    protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-            HttpMediaTypeNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
 
+        }
 
-        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
-    }
+        @ExceptionHandler(javax.validation.ConstraintViolationException.class)
+        public final ResponseEntity<Object> handlerAllConstraintViolationException(
+                        javax.validation.ConstraintViolationException ex, WebRequest request) {
+                Map<String, String> errors = new HashMap<>();
+                ex.getConstraintViolations().forEach(x -> {
+                        errors.put("error", x.getMessageTemplate());
+                });
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), errors.get("error"),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+
+        }
+
+        @ExceptionHandler({ DataIntegrityViolationException.class })
+        public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+                int errorCode = ex.getErrorCode();
+
+                if (errorCode == 1062) {
+
+                        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                        "The customer already exists!");
+                        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
+                }
+
+                ExceptionResponse exceptionResponse1 = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(true));
+                return new ResponseEntity<Object>(exceptionResponse1, HttpStatus.BAD_REQUEST);
+
+        }
+
+        @Override
+        protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                        HttpHeaders headers, HttpStatus status, WebRequest request) {
+                ObjectError objectError = ex.getBindingResult().getAllErrors().get(0);
+                objectError.getDefaultMessage();
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), objectError.getDefaultMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @Override
+        protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                        HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+        }
+
+        @Override
+        protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+                        HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.METHOD_NOT_ALLOWED);
+        }
+
+        @Override
+        protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
+                        HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                                request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        }
 
 }
