@@ -1,5 +1,8 @@
 package com.customer.apirest.exception;
 
+import com.customer.apirest.service.CustomerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -27,8 +30,13 @@ import java.util.Map;
 @RestController
 public class CustomerResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+        Logger logger = LoggerFactory.getLogger(CustomerService.class);
+
         @ExceptionHandler(DateTimeParseException.class)
         public final ResponseEntity<Object> handlerAllDateTimeParseException(DateTimeParseException ex, WebRequest request) {
+
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
 
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
@@ -39,6 +47,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         @ExceptionHandler(CustomerNotFoundExpection.class)
         public final ResponseEntity<Object> handlerAllCustomerNotFoundExpection(Exception ex, WebRequest request) {
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
@@ -49,6 +59,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         public final ResponseEntity<Object> handlerAllSQLIntegrityConstraintViolationException(Exception ex,
                         WebRequest request) {
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
@@ -72,6 +84,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
                 int errorCode = ex.getErrorCode();
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 if (errorCode == 1062) {
 
                         ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
@@ -89,7 +103,10 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                         HttpHeaders headers, HttpStatus status, WebRequest request) {
                 ObjectError objectError = ex.getBindingResult().getAllErrors().get(0);
-                objectError.getDefaultMessage();
+
+                logger.info(objectError.getDefaultMessage());
+                logger.error(ex.toString());
+
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), objectError.getDefaultMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
@@ -99,6 +116,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
                         HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
@@ -108,6 +127,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
                         HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.METHOD_NOT_ALLOWED);
@@ -117,6 +138,8 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
         protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
                         HttpHeaders headers, HttpStatus status, WebRequest request) {
 
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
                 ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(false));
                 return new ResponseEntity<Object>(exceptionResponse, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
