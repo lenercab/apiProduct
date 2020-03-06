@@ -22,7 +22,7 @@ import java.util.Set;
 
 @ControllerAdvice
 @RestController
-public class CustomerResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+public class ProductResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 
     @ExceptionHandler(Exception.class)
