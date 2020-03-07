@@ -55,6 +55,17 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
 
         }
 
+        @ExceptionHandler(CustomerExistException.class)
+        public final ResponseEntity<Object> handlerAllCustomerExistException(Exception ex, WebRequest request) {
+
+                logger.info(ex.getMessage());
+                logger.error(ex.toString());
+                ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+                        request.getDescription(false));
+                return new ResponseEntity<Object>(exceptionResponse, HttpStatus.FORBIDDEN);
+
+        }
+
         @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
         public final ResponseEntity<Object> handlerAllSQLIntegrityConstraintViolationException(Exception ex,
                         WebRequest request) {
@@ -86,12 +97,6 @@ public class CustomerResponseEntityExceptionHandler extends ResponseEntityExcept
 
                 logger.info(ex.getMessage());
                 logger.error(ex.toString());
-                if (errorCode == 1062) {
-
-                        ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
-                                        "The customer already exists!");
-                        return new ResponseEntity<Object>(exceptionResponse, HttpStatus.CONFLICT);
-                }
 
                 ExceptionResponse exceptionResponse1 = new ExceptionResponse(new Date(), ex.getMessage(),
                                 request.getDescription(true));

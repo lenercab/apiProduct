@@ -1,17 +1,14 @@
-package com.customer.apirest.model;
+package com.email.apirest.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-
-import org.springframework.hateoas.ResourceSupport;
-
 import java.time.LocalDate;
 import java.util.List;
 

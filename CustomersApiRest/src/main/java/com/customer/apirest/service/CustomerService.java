@@ -1,8 +1,10 @@
 package com.customer.apirest.service;
 
 import com.customer.apirest.controller.CustomersController;
+import com.customer.apirest.exception.CustomerExistException;
 import com.customer.apirest.exception.CustomerNotFoundExpection;
 import com.customer.apirest.model.Customer;
+import com.customer.apirest.model.Message;
 import com.customer.apirest.repository.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +23,19 @@ public class CustomerService {
 
     public Customer insertCustomer(Customer customer) {
         logger.info("get to started insertCustomer operation");
-        return customerRepository.save(customer);
+        if (customerRepository.existIdentification(customer.getIdentification().getNumberIdentification(),
+                customer.getIdentification().getIdentificationType().getCode()) == 0) {
+            return customerRepository.save(customer);
+        }
+        throw new CustomerExistException("Already exists customer");
     }
 
     public Optional findById(Long id) {
         logger.info("get to started findById operation");
-        Optional optional = customerRepository.findById(id);
-        if (optional == null)
+        if (!customerRepository.existsById(id))
             throw new CustomerNotFoundExpection("Not found customer");
+
+        Optional optional = customerRepository.findById(id);
 
         return optional;
     }
@@ -44,12 +51,21 @@ public class CustomerService {
 
     public Customer updateCustomer(Customer customer) {
         logger.info("get to started updateCustomer operation");
+        if (!customerRepository.existsById(customer.getCustomerId())) {
+            throw new CustomerNotFoundExpection("Not found customer");
+        }
         return customerRepository.save(customer);
     }
 
-    public String deleteCustomer(long id) {
+    public Message deleteCustomer(long id) {
         logger.info("get to started deleteCustomer operation");
+
+        if (!customerRepository.existsById(id)) {
+            throw new CustomerNotFoundExpection("Not found customer: id:" + id);
+        }
         customerRepository.deleteById(id);
-        return "Se elimino customer";
+        Message message = new Message();
+        message.setMessage("Se elimino customer: id: " + id);
+        return message;
     }
 }

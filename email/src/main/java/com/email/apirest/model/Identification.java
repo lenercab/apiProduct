@@ -1,13 +1,14 @@
-package com.customer.apirest.model;
+package com.email.apirest.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
-
 import java.time.LocalDate;
 
 @ApiModel(description = "This model class represents the information basic of the identification customer")

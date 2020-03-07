@@ -113,10 +113,9 @@ public class CustomersController {
                                                       @RequestHeader(name = "x-terminal", required = true) String xTerminal) {
         logger.info("get to started Controller CustomersDeleteById");
         HttpHeaders responseHeaders = new HttpHeaders();
-        String message = customerService.deleteCustomer(id);
         responseHeaders.set("date-operation", new Date().toString());
         responseHeaders.set("x-terminal", xTerminal);
-        return ResponseEntity.ok().headers(responseHeaders).body(message);
+        return ResponseEntity.ok().headers(responseHeaders).body(customerService.deleteCustomer(id));
     }
 
     @ApiOperation(value = "Modificate the information of customer", response = Customer.class)
