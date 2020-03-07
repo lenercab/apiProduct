@@ -1,0 +1,1 @@
+insert into demo_rs (id, value, sexo, date, numero_identificacion) values(1L,'Maria', 'M', '192-04-24', '9297638');
