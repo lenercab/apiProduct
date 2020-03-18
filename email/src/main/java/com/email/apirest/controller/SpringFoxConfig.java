@@ -1,6 +1,7 @@
 package com.email.apirest.controller;
 
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -25,5 +26,10 @@ public class SpringFoxConfig {
                 .paths(PathSelectors.any())
                 .build();
 
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }

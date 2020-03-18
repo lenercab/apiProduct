@@ -1,7 +1,6 @@
 package com.email.apirest.controller;
 
-import com.email.apirest.exception.EmailReponseEntityExceptionhandler;
-import com.email.apirest.model.Email;
+import com.email.apirest.dto.*;
 import com.email.apirest.service.EmailService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -23,7 +22,7 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
 
-    @ApiOperation(value = "")
+    @ApiOperation(value = "Consult all emails of one customer", response = EmailGETALL.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 400, message = "Bab request"),
@@ -40,7 +39,7 @@ public class EmailController {
         return ResponseEntity.ok(emailService.getAllEmails(customerId));
     }
 
-    @ApiOperation(value = "Consult Email by id", response = Email.class)
+    @ApiOperation(value = "Consult Email by id", response = EmailGETById.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Ok"),
             @ApiResponse(code = 400, message = "Bab request"),
@@ -57,7 +56,7 @@ public class EmailController {
         return ResponseEntity.ok(emailService.getByIdEmail(id, customerId));
     }
 
-    @ApiOperation(value = "Add  email", response = Email.class)
+    @ApiOperation(value = "Add  email", response = EmailPSTRs.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Create Email was successfully"),
             @ApiResponse(code = 400, message = "Bab request"),
@@ -69,12 +68,12 @@ public class EmailController {
     })
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping("/Emails")
-    public ResponseEntity<Object> emailPST(@Valid @RequestBody Email email) {
+    public ResponseEntity<Object> emailPST(@Valid @RequestBody EmailPSTRq emailPSTRq) {
         logger.info("get to started controller emailPST");
-        return ResponseEntity.status(HttpStatus.CREATED).body(emailService.saveEmail(email));
+        return ResponseEntity.status(HttpStatus.CREATED).body(emailService.saveEmail(emailPSTRq));
     }
 
-    @ApiOperation(value = "Modificate the information of Email", response = Email.class)
+    @ApiOperation(value = "Modificate the information of Email", response = EmailPTCRs.class)
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "update Email was successfully"),
             @ApiResponse(code = 400, message = "Bab request"),
@@ -86,12 +85,12 @@ public class EmailController {
     })
     @ResponseStatus(value = HttpStatus.CREATED)
     @PatchMapping("/Emails")
-    public ResponseEntity<Object> emailPTC(@Valid @RequestBody Email email) {
+    public ResponseEntity<Object> emailPTC(@Valid @RequestBody EmailPTCRq emailPTCRq) {
         logger.info("get to started controller emailPTC");
-        return ResponseEntity.status(HttpStatus.CREATED).body(emailService.updateEmail(email));
+        return ResponseEntity.status(HttpStatus.CREATED).body(emailService.updateEmail(emailPTCRq));
     }
 
-    @ApiOperation(value = "Delete Email by id")
+    @ApiOperation(value = "Delete Email by id", response = Message.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Delete operation was successfully"),
             @ApiResponse(code = 400, message = "Bab request"),
@@ -102,9 +101,9 @@ public class EmailController {
             @ApiResponse(code = 500, message = "Error internal server")
     })
     @ResponseStatus(value = HttpStatus.OK)
-    @DeleteMapping("/Emails/{id}")
-    public ResponseEntity<Object> emailDeleteById(@PathVariable("id") long id) {
+    @DeleteMapping("/Customers/{customerId}/Emails/{id}")
+    public ResponseEntity<Object> emailDeleteById(@PathVariable("id") long id, @PathVariable("customerId") long customerId) {
         logger.info("get to started controller emailDeleteById");
-        return ResponseEntity.ok().body(emailService.deleteEmailById(id));
+        return ResponseEntity.ok().body(emailService.deleteEmailById(id, customerId));
     }
 }

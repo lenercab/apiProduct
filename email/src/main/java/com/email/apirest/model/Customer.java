@@ -13,10 +13,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@ApiModel(description = "This model class represents the data basic one customer")
 @Entity
 @Data
-public class Customer extends ResourceSupport {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,32 +26,24 @@ public class Customer extends ResourceSupport {
     @Valid
     private Identification identification;
 
-    @ApiModelProperty(notes = "it is necessary to enter name customer", example = "Leehener", required = true)
     @Column
-    @NotNull(message = "the field name is required")
-    @NotEmpty(message = "name: empty field is not accepted")
     private String name;
 
-    @ApiModelProperty(notes = "it is necessary to enter lastname customer", example = "Cabeza", required = true)
     @Column
     @NotNull(message = "the field lastName is required")
     @NotEmpty(message = "lastName: empty field is not accepted")
     private String lastName;
 
-    @ApiModelProperty(example = "Colombia")
     @Column
     private String country;
 
-    @ApiModelProperty(example = "Cartagena")
     @Column
     private String birthCity;
 
-    @ApiModelProperty(example = "1982-04-24", required = true)
     @Column
     @NotNull(message = "the field birthDate is required")
     private LocalDate birthDate;
 
-    @ApiModelProperty(example = "Soltero", required = true)
     @Column
     @NotNull(message = "the maritalStatus field is required")
     private String maritalStatus;
@@ -62,7 +53,6 @@ public class Customer extends ResourceSupport {
     @Valid
     private Gender gender;
 
-    @ApiModelProperty(example = "system engineer")
     @Column
     private String profession;
 

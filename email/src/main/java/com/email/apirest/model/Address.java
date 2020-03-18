@@ -1,16 +1,11 @@
 package com.email.apirest.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
-@ApiModel(description = "This model class represents the data basic one phone")
 @Entity
 @Data
 public class Address {
@@ -20,10 +15,7 @@ public class Address {
     private long id;
 
     @Column
-    @NotNull(message = "the field address is required")
-    @NotEmpty(message = "address: empty field is not accepted")
-    @ApiModelProperty(notes = "it is necessary to enter address", required = true)
-    private String address;
+     private String address;
 
     @Column
     private String country;
