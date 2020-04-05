@@ -1,14 +1,9 @@
 package com.email.apirest.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,8 +25,6 @@ public class Customer {
     private String name;
 
     @Column
-    @NotNull(message = "the field lastName is required")
-    @NotEmpty(message = "lastName: empty field is not accepted")
     private String lastName;
 
     @Column
@@ -41,11 +34,9 @@ public class Customer {
     private String birthCity;
 
     @Column
-    @NotNull(message = "the field birthDate is required")
     private LocalDate birthDate;
 
     @Column
-    @NotNull(message = "the maritalStatus field is required")
     private String maritalStatus;
 
     @ManyToOne

@@ -28,7 +28,7 @@ public class CustomerService {
 
     public CustomerPSTDtoRs  insertCustomer(CustomerPSTDtoRq customerPSTDtoRq) {
         logger.info("get to started insertCustomer operation");
-        ModelMapper modelMapper = new ModelMapper();
+
         if (customerRepository.existIdentification(customerPSTDtoRq.getIdentification().getNumberIdentification(),
             customerPSTDtoRq.getIdentification().getIdentificationType().getCode()) == 0) {
 

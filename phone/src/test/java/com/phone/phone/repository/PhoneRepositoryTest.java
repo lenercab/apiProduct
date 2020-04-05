@@ -1,9 +1,6 @@
-package com.customer.apirest.repository;
+package com.phone.phone.repository;
 
-import com.customer.apirest.model.Customer;
-import com.customer.apirest.model.Gender;
-import com.customer.apirest.model.Identification;
-import com.customer.apirest.model.IdentificationType;
+import com.phone.phone.model.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,53 +9,36 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CustomerRepositoryTest {
+public class PhoneRepositoryTest {
 
     @Autowired
     CustomerRepository customerRepository;
 
+    @Autowired
+    PhoneRepository phoneRepository;
 
     @Test
-    public void saveCustomerTest(){
+    public void CRUDtestPhone(){
 
         Customer customer = getRequestCustomer();
         customerRepository.save(customer);
-        System.out.println(customer);
-        assertNotNull(customer.getCustomerId());
+        Phone phone = getRequestPhone();
 
+        phoneRepository.save(phone);
+
+        assertEquals(1l, phone.getId());
+        assertEquals(false, phoneRepository.findAllByCustomerId(1l).isEmpty());
+        assertEquals("3135718791", phoneRepository.findByIdAndCustomerId(1l, 1l).getNumberPhone());
+        assertEquals(1, phoneRepository.exitNumberPhoneOfCustomer("3135718791", 1l));
     }
 
-
-    @Test
-    public void findByid(){
-
-       Optional customer = customerRepository.findById(1L);
-       assertNotNull(customer);
-
-    }
-
-    @Test
-    public void findByNumerIdentification(){
-
-       Customer customer = customerRepository.findByNumerIdentification("9297638","CC");
-       assertEquals(customer.getName(), "Leehener");
-
-    }
-
-    @Test
-    public void  existIdentification(){
-        int  exist = customerRepository.existIdentification("9297638","CC");
-        assertEquals(1,exist);
-    }
-
-        public Customer getRequestCustomer() {
+    public Customer getRequestCustomer() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -87,4 +67,16 @@ public class CustomerRepositoryTest {
 
         return customer;
     }
+
+    public Phone getRequestPhone(){
+
+        Phone phone = new Phone();
+        phone.setNumberPhone("3135718791");
+        phone.setTypePhone("Movil");
+        phone.setOperator("CLARO");
+        phone.setCustomerId(1l);
+
+        return phone;
+    }
+
 }

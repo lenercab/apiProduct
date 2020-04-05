@@ -9,6 +9,7 @@ import com.email.apirest.dto.Message;
 import com.email.apirest.repository.CustomerRepository;
 import com.email.apirest.repository.EmailRepository;
 import com.email.apirest.util.Hateoas;
+import com.email.apirest.util.Mapper;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +64,6 @@ public class EmailService {
         }
 
         ModelMapper modelMapper = new ModelMapper();
-
         return modelMapper.map(email, EmailGETById.class);
     }
 
@@ -71,9 +71,8 @@ public class EmailService {
         logger.info("Entry logic business insert one customer in the data base");
         if (customerRepository.existsById(emailPSTRq.getCustomerId())) {
 
-            Email email = new Email();
-            email.setCustomerId(emailPSTRq.getCustomerId());
-            email.setEmail(emailPSTRq.getEmail());
+
+            Email email = Mapper.mapperRequestPST(emailPSTRq);
             emailRepository.save(email);
 
             EmailPSTRs emailPSTRs = new EmailPSTRs();
@@ -96,10 +95,7 @@ public class EmailService {
             throw new EmailNotFoundException("Not found email");
         }
 
-        Email email = new Email();
-        email.setCustomerId(emailPTCRq.getCustomerId());
-        email.setEmail(emailPTCRq.getEmail());
-        email.setId(emailPTCRq.getId());
+        Email email = Mapper.mapperRequestPTC(emailPTCRq);
         emailRepository.save(email);
 
         EmailPTCRs emailPTCRs = new EmailPTCRs();

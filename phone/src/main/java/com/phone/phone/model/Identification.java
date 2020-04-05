@@ -1,14 +1,10 @@
 package com.phone.phone.model;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @Entity
