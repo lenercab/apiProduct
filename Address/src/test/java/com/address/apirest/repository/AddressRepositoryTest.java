@@ -24,6 +24,8 @@ public class AddressRepositoryTest {
 
     @Test
     public void CRUDTestAddress(){
+      Customer customer = getRequestCustomer();
+      customerRepository.save(customer);
       Address address = getRequestAddress();
       addressRepository.save(address);
 
